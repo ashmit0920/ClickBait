@@ -148,3 +148,39 @@ Build a real-time A/B testing engine that:
 - 🔔 **Real-Time Alerts:** Notify admins of statistically significant changes.
 
 ---
+
+## Project Structure:
+
+📦 ClickBait
+├── 📂 backend                # FastAPI Backend
+│   ├── 📂 api
+│   │   ├── __init__.py
+│   │   ├── models.py         # Database Models
+│   │   ├── routes.py         # API Routes
+│   │   └── services.py       # Business Logic
+│   ├── 📂 core
+│   │   ├── config.py         # App Configuration
+│   │   └── kafka.py          # Kafka Producer/Consumer
+│   ├── 📂 tests
+│   └── main.py               # FastAPI Entry Point
+├── 📂 frontend               # Next.js Frontend
+│   ├── 📂 components
+│   ├── 📂 pages
+│   ├── 📂 styles
+│   ├── 📂 public
+│   └── next.config.js
+├── 📂 kafka                  # Kafka with Docker
+│   ├── docker-compose.yml    # Kafka + Zookeeper Config
+│   └── 📂 configs
+│       └── server.properties
+├── 📂 models                 # AI Models
+│   ├── mab.py                # Multi-Armed Bandit Model
+│   └── bayesian.py           # Bayesian Optimization
+├── 📂 scripts
+│   └── init_db.py            # DB Initialization Script
+├── 📂 deployment
+│   ├── Dockerfile.backend    # Dockerfile for Backend
+│   ├── Dockerfile.frontend   # Dockerfile for Frontend
+│   ├── Dockerfile.kafka      # Dockerfile for Kafka Setup
+│   └── kubernetes.yml        # Kubernetes Config
+└── 📄 README.md
