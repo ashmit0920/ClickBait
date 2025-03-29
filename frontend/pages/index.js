@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+
 export default function Home() {
   const [variation, setVariation] = useState("");
 
   useEffect(() => {
     // Fetch the variation dynamically from FastAPI
     axios
-      .get("http://localhost:8000/variation") // Ensure FastAPI is running on port 8000
+      .get("http://localhost:8000/api/variation") // Ensure FastAPI is running on port 8000
       .then((res) => {
         setVariation(res.data.variation);
       })
