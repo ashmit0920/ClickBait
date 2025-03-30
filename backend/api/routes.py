@@ -5,12 +5,14 @@ import json
 import random
 import os
 from dotenv import load_dotenv
+from models.mab import MultiArmedBandit
 
 load_dotenv()
 
 router = APIRouter()
 
 variations = ["variation1", "variation2", "variation3"]
+mab = MultiArmedBandit(variations)
 
 
 @router.get("/variation")
