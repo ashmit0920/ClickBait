@@ -17,11 +17,25 @@ export default function Home() {
       .catch((err) => console.error("Error fetching variation:", err));
   }, []);
 
+  // Sending click events to backend (FastAPI + Kafka)
+  const trackClick = async (eventType, variationName) => {
+    try {
+      await axios.post("http://localhost:8000/api/events", {
+        eventType,
+        variationName,
+        timestamp: new Date().toISOString(),
+      });
+      console.log(`Event "${eventType}" tracked successfully!`);
+    } catch (error) {
+      console.error("Error sending event: ", error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center">
-      {variation === "variation1" && <Variation1 />}
-      {variation === "variation2" && <Variation2 />}
-      {variation === "variation3" && <Variation3 />}
+      {variation === "variation1" && <Variation1 trackClick={trackClick} />}
+      {variation === "variation2" && <Variation2 trackClick={trackClick} />}
+      {variation === "variation3" && <Variation3 trackClick={trackClick} />}
     </div>
   );
 }
