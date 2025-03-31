@@ -5,7 +5,7 @@ import numpy as np
 
 
 class MultiArmedBandit:
-    def __init__(self, variations, epsilon=0.1):
+    def __init__(self, variations, epsilon=0.3):
         self.variations = variations  # List of UI variations
         self.epsilon = epsilon        # Exploration rate
         self.counts = {v: 0 for v in variations}   # Track number of pulls
@@ -15,11 +15,13 @@ class MultiArmedBandit:
         # Select variation using epsilon-greedy strategy.
         if random.random() < self.epsilon:
             # Explore - choose a random variation
+            print(f"random choice")
             return random.choice(self.variations)
         else:
             # Exploit - choose the best variation so far
             avg_rewards = {
                 v: self.rewards[v] / (self.counts[v] + 1e-5) for v in self.variations}
+            print("best variation")
             return max(avg_rewards, key=avg_rewards.get)
 
     def update(self, variation, reward):

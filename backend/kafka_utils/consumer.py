@@ -25,7 +25,7 @@ def consume_click_events():
             # Defining events for which reward should be 1
             positive_events = ["get_started",
                                "learn_more", "sign_up", "subscribe"]
-            reward = 1 if event["eventType"] in positive_events else 0
+            reward = 1 if event["eventType"] in positive_events else -1
 
             mab.update(variation, reward)
             print(

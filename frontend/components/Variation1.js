@@ -11,6 +11,12 @@ const Variation1 = ({ trackClick }) => {
       >
         Get Started
       </button>
+      <button
+        className="mt-4 bg-blue-950 text-white px-4 py-2 rounded"
+        onClick={() => trackClick("quit", "variation1")}
+      >
+        Quit
+      </button>
     </div>
   );
 };
