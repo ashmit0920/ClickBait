@@ -1,6 +1,12 @@
 from fastapi import FastAPI
 from api.routes import router as api_router
 from fastapi.middleware.cors import CORSMiddleware
+import threading
+from .kafka_utils.consumer import consume_click_events
+
+# Start Kafka consumer in a separate thread
+consumer_thread = threading.Thread(target=consume_click_events)
+consumer_thread.start()
 
 origins = [
     "http://localhost:3000",

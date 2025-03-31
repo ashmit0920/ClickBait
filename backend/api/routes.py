@@ -6,18 +6,20 @@ import random
 import os
 from dotenv import load_dotenv
 from models.mab import MultiArmedBandit
+from models.bayesian import BayesianOptimizer
+from backend.config import variations
 
 load_dotenv()
 
 router = APIRouter()
 
-variations = ["variation1", "variation2", "variation3"]
 mab = MultiArmedBandit(variations)
+bo = BayesianOptimizer(variations)
 
 
 @router.get("/variation")
 def get_variation():
-    selected_variation = random.choice(variations)
+    selected_variation = mab.select_variation()
     return {"variation": selected_variation}
 
 
@@ -61,3 +63,9 @@ async def get_events():
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/optimize")
+async def optimize_variations():
+    optimized_weights = bo.optimize()
+    return {"optimized_weights": optimized_weights}
