@@ -1,0 +1,11 @@
+fastapi
+kafka
+pymongo
+json
+os
+python-dotenv
+logging
+numpy
+random
+scipy
+threading

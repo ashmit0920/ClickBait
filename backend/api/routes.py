@@ -7,7 +7,7 @@ import os
 from dotenv import load_dotenv
 from models.mab import MultiArmedBandit
 from models.bayesian import BayesianOptimizer
-from backend.config import variations
+from config import variations
 
 load_dotenv()
 
