@@ -2,7 +2,7 @@ from kafka import KafkaConsumer
 import json
 from models.mab import MultiArmedBandit
 from models.bayesian import BayesianOptimizer
-from config import variations
+from config import variations, positive_events
 
 consumer = KafkaConsumer(
     "click_events",
@@ -23,8 +23,6 @@ def consume_click_events():
             variation = event["variationName"]
 
             # Defining events for which reward should be 1
-            positive_events = ["get_started",
-                               "learn_more", "sign_up", "subscribe"]
             reward = 1 if event["eventType"] in positive_events else -1
 
             mab.update(variation, reward)

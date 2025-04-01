@@ -42,7 +42,7 @@ async def track_event(event: dict):
         # Send event to Kafka topic "click_events"
         producer.send("click_events", event)
         producer.flush()  # Ensure all messages are sent before moving forward
-        print(f"✅ Event sent to Kafka: {event}")
+        print(f"\n✅ Event sent to Kafka: {event}")
 
         # Store event in MongoDB
         collection.insert_one(event)
