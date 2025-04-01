@@ -38,19 +38,28 @@ class MultiArmedBandit:
             # Force selection until minimum exploration is met
             if self.counts[v] < self.min_exploration:
                 print(f"Minimum exploration enforced: selecting {v}")
+                self.counts[v] += 1
+                self.save_state()
                 return v
 
         # Select variation using epsilon-greedy strategy.
         if random.random() < self.epsilon:
             # Explore - choose a random variation
             print(f"Random Choice")
-            return random.choice(self.variations)
+            v = random.choice(self.variations)
+            self.counts[v] += 1
+            self.save_state()
+            return v
+
         else:
             # Exploit - choose the best variation so far
             avg_rewards = {
                 v: self.rewards[v] / (self.counts[v] + 1e-5) for v in self.variations}
-            print("Best Variation")
-            return max(avg_rewards, key=avg_rewards.get)
+            print(f"Best Variation: avg_rewards = {avg_rewards}")
+            v = max(avg_rewards, key=avg_rewards.get)
+            self.counts[v] += 1
+            self.save_state()
+            return v
 
     def update(self, variation, reward):
         # Update counts and rewards for a given variation.
