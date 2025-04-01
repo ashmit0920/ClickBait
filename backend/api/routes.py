@@ -1,39 +1,19 @@
 from fastapi import APIRouter, HTTPException
-from kafka import KafkaProducer
-from pymongo import MongoClient
-import json
-import random
-import os
-from dotenv import load_dotenv
 from models.mab import MultiArmedBandit
 from models.bayesian import BayesianOptimizer
 from config import variations
-
-load_dotenv()
+from database import db, collection, producer
 
 router = APIRouter()
 
-mab = MultiArmedBandit(variations)
-bo = BayesianOptimizer(variations)
+mab = MultiArmedBandit(variations, db)
+bo = BayesianOptimizer(variations, db)
 
 
 @router.get("/variation")
 def get_variation():
     selected_variation = mab.select_variation()
     return {"variation": selected_variation}
-
-
-producer = KafkaProducer(
-    bootstrap_servers="localhost:9092",
-    value_serializer=lambda v: json.dumps(v).encode('utf-8'),
-)
-
-MONGO_URI = os.getenv("MONGO_URI")
-
-client = MongoClient(MONGO_URI)
-
-db = client["ClickBait"]
-collection = db["click_events"]
 
 
 @router.post("/events")
@@ -51,7 +31,7 @@ async def track_event(event: dict):
         return {"message": "Event sent and stored successfully!"}
 
     except Exception as e:
-        print(f"❌ Error in /events route: {e} \nURI - {MONGO_URI}")
+        print(f"❌ Error in /events route: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

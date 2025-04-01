@@ -1,18 +1,36 @@
 import random
 import numpy as np
-from pymongo import MongoClient
 
 # Multi Armed Bandit with Epsilon-Greedy
 
 
 class MultiArmedBandit:
-    def __init__(self, variations, epsilon=0.3, min_exploration=5):
+    def __init__(self, variations, db, epsilon=0.3, min_exploration=5):
         self.variations = variations  # List of UI variations
         self.epsilon = epsilon        # Exploration rate
         # minimum no. of trials for each variation (to prevent skewing)
         self.min_exploration = min_exploration
-        self.counts = {v: 0 for v in variations}   # Track number of pulls
-        self.rewards = {v: 0 for v in variations}  # Track cumulative rewards
+        self.collection = db['MAB_state']
+
+        # Load previous state or initialize new
+        self.state = self.collection.find_one({"_id": "mab"})
+        if self.state:
+            self.counts = self.state["counts"]
+            self.rewards = self.state["rewards"]
+        else:
+            self.counts = {v: 0 for v in variations}  # Track number of pulls
+            # Track cumulative rewards
+            self.rewards = {v: 0 for v in variations}
+            self.save_state()
+
+    def save_state(self):
+        # Save MAB state to MongoDB for persistent storage (otherwise refreshed when browser is reloaded)
+        self.collection.update_one(
+            {"_id": "mab"},
+            {"$set": {"counts": self.counts, "rewards": self.rewards}},
+            upsert=True
+        )
+        print("\nMAB State saved to MongoDB.")
 
     def select_variation(self):
 
@@ -38,3 +56,4 @@ class MultiArmedBandit:
         # Update counts and rewards for a given variation.
         self.counts[variation] += 1
         self.rewards[variation] += reward
+        self.save_state()

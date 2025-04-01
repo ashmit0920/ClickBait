@@ -3,13 +3,30 @@ import numpy as np
 
 
 class BayesianOptimizer:
-    def __init__(self, variations):
+    def __init__(self, variations, db):
         self.variations = variations
-        self.performance_data = {v: [] for v in variations}
+        self.collection = db["bayesian_state"]
+
+        # Load previous performance data from MongoDB or initialize new
+        self.state = self.collection.find_one({"_id": "bo"})
+        if self.state:
+            self.performance_data = self.state["performance_data"]
+        else:
+            self.performance_data = {v: [] for v in variations}
+            self.save_state()
+
+    def save_state(self):
+        # Save Bayesian performance data to MongoDB.
+        self.collection.update_one(
+            {"_id": "bo"},
+            {"$set": {"performance_data": self.performance_data}},
+            upsert=True
+        )
 
     def update_performance(self, variation, reward):
         # Update performance data for Bayesian optimization.
         self.performance_data[variation].append(reward)
+        self.save_state()
 
     def optimize(self):
         # Optimize traffic allocation for variations.

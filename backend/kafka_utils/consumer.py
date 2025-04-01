@@ -3,6 +3,7 @@ import json
 from models.mab import MultiArmedBandit
 from models.bayesian import BayesianOptimizer
 from config import variations, positive_events
+from database import db
 
 consumer = KafkaConsumer(
     "click_events",
@@ -10,8 +11,8 @@ consumer = KafkaConsumer(
     value_deserializer=lambda v: json.loads(v.decode("utf-8")),
 )
 
-mab = MultiArmedBandit(variations)
-bo = BayesianOptimizer(variations)
+mab = MultiArmedBandit(variations, db)
+bo = BayesianOptimizer(variations, db)
 
 # Consume clickstream events and update MAB model
 

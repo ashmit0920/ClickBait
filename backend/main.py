@@ -3,6 +3,7 @@ from api.routes import router as api_router
 from fastapi.middleware.cors import CORSMiddleware
 import threading
 from kafka_utils.consumer import consume_click_events
+from database import producer, client
 
 # Start Kafka consumer in a separate thread
 consumer_thread = threading.Thread(target=consume_click_events)
@@ -30,3 +31,10 @@ app.include_router(api_router, prefix="/api")
 @app.get("/")
 def root():
     return {"message": "Welcome to ClickBait API!"}
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    print("Shutting down server... Closing database & Kafka connections.")
+    client.close()
+    producer.close()
